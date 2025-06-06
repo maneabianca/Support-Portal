@@ -1,0 +1,17 @@
+#spring.application.name=supportportal
+#spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/supportportal_schema
+#spring.datasource.username=root
+#spring.datasource.password=root
+
+server:
+  port: 8081
+
+spring:
+    datasource:
+      url: jdbc:mysql://localhost:3306/supportportal_schema
+      password: root
+      username: root
+    jpa:
+        show-sql: true
+        hibernate:
+          ddl-auto: create
