@@ -14,6 +14,6 @@ public class SecurityConstant {
     public static final String OPTIONS_HTTP_METHOD = "OPTIONS";
 
     // All the URLs that can be accessed without any security
-    public static final String[] PUBLIC_URLS = {"/user/login", "/user/register", "/user/resetpassword/**", "/user/image/**"};
-
+//   public static final String[] PUBLIC_URLS = {"/user/login", "/user/register", "/user/resetpassword/**", "/user/image/**"};
+     public static final String[] PUBLIC_URLS = {"**"};  //for testing
 }
