@@ -15,7 +15,7 @@ spring:
     jpa:
         show-sql: true
         hibernate:
-          ddl-auto: create
+          ddl-auto: update
 #    mvc:
 #      throw-exception-if-no-handler-found: true
 #    resources:
