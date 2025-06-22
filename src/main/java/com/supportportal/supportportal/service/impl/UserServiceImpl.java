@@ -8,6 +8,7 @@ import com.supportportal.supportportal.exception.domain.EmailExistException;
 import com.supportportal.supportportal.exception.domain.UserNotFoundException;
 import com.supportportal.supportportal.exception.domain.UsernameExistException;
 import com.supportportal.supportportal.repository.UserRepository;
+import com.supportportal.supportportal.service.EmailService;
 import com.supportportal.supportportal.service.LoginAttemptService;
 import com.supportportal.supportportal.service.UserService;
 import jakarta.transaction.Transactional;
@@ -24,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.mail.MessagingException;
 import java.util.Date;
 import java.util.List;
 
@@ -36,12 +38,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
     private LoginAttemptService loginAttemptService;
+    private EmailService emailService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, LoginAttemptService loginAttemptService) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, LoginAttemptService loginAttemptService, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.loginAttemptService = loginAttemptService;
+        this.emailService = emailService;
     }
 
     // Gets called whenever Spring Security is trying to check the authentication of the user
@@ -78,7 +82,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User register(String firstName, String lastName, String username, String email) throws UserNotFoundException, EmailExistException, UsernameExistException {
+    public User register(String firstName, String lastName, String username, String email) throws UserNotFoundException, EmailExistException, UsernameExistException, MessagingException {
         validateNewUsernameAndEmail(StringUtils.EMPTY, username, email);
         User user = new User();
 
@@ -103,8 +107,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
 
         userRepository.save(user);
-        //TODO - remove logger
-        LOGGER.info("New user password: {}", password);
+        emailService.sentNewPasswordEmail(firstName, password, email);
 
         return user;
     }
